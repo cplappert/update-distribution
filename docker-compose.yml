@@ -1,0 +1,68 @@
+version: "3"
+services:
+# 1. TCU with attached TPM (via spi-nw)
+#    TCU (connected via eth-nw to ECU_U and ECU_C)
+  tcu:
+    container_name: update-distribution-tcu
+    networks:
+      update-distribution-spi-nw:
+        ipv4_address: 10.0.0.10
+      update-distribution-eth-nw:
+        ipv4_address: 20.0.0.10
+    build:
+      context: ./
+      dockerfile: docker_files/tcu.docker
+    expose:
+      - "5001"
+    depends_on:
+      - swtpm
+
+  swtpm:
+    container_name: update-distribution-swtpm
+    networks:
+      update-distribution-spi-nw:
+        ipv4_address: 10.0.0.20
+    build:
+      context: ./
+      dockerfile: docker_files/swtpm.docker
+    expose:
+      - "2321"
+      - "2322"
+
+# 2. ECU_U (connected via eth-nw to TCU and ECU_C)
+  ecuu:
+    container_name: update-distribution-ecuu
+    networks:
+      update-distribution-eth-nw:
+        ipv4_address: 20.0.0.20
+    build:
+      context: ./
+      dockerfile: docker_files/ecu.docker
+    expose:
+      - "5002"
+
+# 3. ECU_C (connected via eth-nw to TCU and ECU_U)
+  ecuc:
+    container_name: update-distribution-ecuc
+    networks:
+      update-distribution-eth-nw:
+        ipv4_address: 20.0.0.30
+    build:
+      context: ./
+      dockerfile: docker_files/ecu.docker
+    expose:
+      - "5003"
+
+networks:
+  update-distribution-spi-nw:
+    name: update-distribution-spi-nw
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.0.0.0/24"
+  update-distribution-eth-nw:
+    name: update-distribution-eth-nw
+    ipam:
+      driver: default
+      config:
+        - subnet: "20.0.0.0/24"

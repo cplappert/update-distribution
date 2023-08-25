@@ -1,0 +1,63 @@
+# Docker file for TCU
+FROM ubuntu:focal
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Link code inside container
+ADD ../src/ /tmp/src
+
+# Install dependencies
+RUN apt update && \
+    apt install -y \
+	autoconf-archive \
+	libcmocka0 \
+	libcmocka-dev \
+	procps \
+	iproute2 \
+	build-essential \
+	git \
+	pkg-config \
+	gcc \
+	libtool \
+	automake \
+	libssl-dev \
+	uthash-dev \
+	autoconf \
+	doxygen \
+	libjson-c-dev \
+	libini-config-dev \
+	libcurl4-openssl-dev \
+	uuid-dev \
+	libltdl-dev \
+	libusb-1.0-0-dev \
+	libftdi-dev \
+	ncat \
+	xxd \
+	expect
+
+# For debug
+RUN apt update && \
+    apt install -y \
+    iputils-ping \
+    vim \
+    strace \
+    cgdb \
+    libtool-bin
+
+# Build TSS
+RUN cd /tmp/src/requiredSoftware/tpm2-tss-extended/ \
+	&& ./bootstrap \
+	&& ./configure --disable-fapi \
+	&& make -j$(nproc) \
+	&& make install \
+	&& ldconfig
+
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+RUN cd /tmp/src/ \
+	&& sed -i 's/.\/requiredSoftware/\/tmp\/src\/requiredSoftware/g' Makefile \
+	&& make main_tpm
+
+#	&& bash main-tpm.sh provision
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]

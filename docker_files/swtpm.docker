@@ -1,0 +1,52 @@
+# Docker file for SWTPM
+FROM ubuntu:focal
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install libtpms and swtpm dependencies
+RUN apt update && \
+    apt install -y \
+    automake \
+    autoconf \
+    libtool \
+    make \
+    gcc \
+    libc-dev \
+    libssl-dev \
+    git \
+    pkg-config \
+    g++ \
+    libtasn1-6-dev \
+    net-tools \
+    libjson-glib-dev \
+    expect \
+    gawk \
+    socat \
+    libseccomp-dev
+
+# For debug
+RUN apt update && \
+    apt install -y \
+    iproute2 \
+    iputils-ping \
+    vim
+
+# Build SWTPM
+RUN git -C /tmp clone --depth=1 --branch v0.9.6 https://github.com/stefanberger/libtpms.git \
+    && cd /tmp/libtpms \
+    && ./autogen.sh --prefix=/usr $LIBTPMS_AUTOGEN_EXTRA --with-openssl --with-tpm2 \
+    && make -j$(nproc) \
+    && make install \
+    && rm -fr /tmp/libtpms \
+    && git -C /tmp clone --depth=1 --branch v0.8.1 https://github.com/stefanberger/swtpm.git \
+    && cd /tmp/swtpm \
+    && ./autogen.sh --prefix=/usr \
+    && make -j$(nproc) $SWTPM_MAKE_EXTRA \
+    && make install \
+    && rm -fr /tmp/swtpm
+
+# Start SWTPM Server
+CMD ["swtpm", "socket", "--tpm2", "--server", "port=2321,bindaddr=0.0.0.0", "--ctrl", "type=tcp,port=2322,bindaddr=0.0.0.0", "--flags", "not-need-init", "--tpmstate", "dir=."]
+
+# ENTRYPOINT ["tail", "-f", "/dev/null"]
+# swtpm socket --tpm2 --server port=2321,bindaddr=0.0.0.0 --ctrl type=tcp,port=2322 --flags not-need-init --tpmstate dir=.

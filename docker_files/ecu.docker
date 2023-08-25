@@ -1,0 +1,32 @@
+# Docker file for ECU_U and ECU_C
+FROM ubuntu:focal
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Link code inside container
+ADD ../src/ /tmp/src
+
+# Install dependencies
+RUN apt update && \
+    apt install -y \
+	build-essential \
+	gcc \
+	libssl-dev \
+	ncat \
+	xxd
+
+# For debug
+RUN apt update && \
+    apt install -y \
+    iproute2 \
+    iputils-ping \
+    vim
+
+# Build software
+RUN cd /tmp/src/ \
+	&& sed -i 's/.\/requiredSoftware/\/tmp\/src\/requiredSoftware/g' Makefile \
+	&& make main_ecu
+
+	#&& bash main-ecu-u.sh provision
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]
