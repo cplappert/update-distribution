@@ -70,7 +70,7 @@ symmetric key derivation), the derivation secret, and the condition ECU IDs.
 ```
 1. cd src
 2. Create backend keys, update packages, and some auxiliary data
-  - bash main-backend.sh allcmds rsa // "Export" raw.key `xxd data/raw.key`
+  - bash main-backend.sh allcmds rsa // "Export" raw.key `xxd keys/raw.key`
 3. cd ..
 ```
 

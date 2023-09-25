@@ -21,15 +21,15 @@
 void print_usage() {
     printf(\
     "Standalone Example:\n"
-    "  ./main_ecu --provision --key data/raw.key\n"\
+    "  ./main_ecu --provision --key keys/raw.key\n"\
     "  ./main_ecu --verify-hmac --update-data data/update.bin --hmac data/update.mac\n"\
     "  ./main_ecu --answer-challenge --kdf-input data/ecu.ids --challenge data/tpm.nonce1\n"\
     "  ./main_ecu --generate-challenge --out data/ecu.nonce\n"\
     "\n"
     "Full Working Example:\n"
     "   1. PROVISIONING\n"\
-    "       ./main_ecu --provision --key data/raw.key\n"\
-    "       ./main_tpm --provision --raw-derivation-key data/raw.key --pem-key keys/backend_pub.pem --session-hash data/session.hash\n"\
+    "       ./main_ecu --provision --key keys/raw.key\n"\
+    "       ./main_tpm --provision --raw-derivation-key keys/raw.key --pem-key keys/backend_pub.pem --session-hash data/session.hash\n"\
     "   2. POLICY_CREATION\n"\
     "       ./main_tpm --createpolicies --session-hash data/session.hash --template-hash data/template.hash --secret keys/secret.key\n"\
     "        "
