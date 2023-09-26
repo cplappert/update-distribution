@@ -48,6 +48,7 @@ end
 | | main_ecu.c | The main program of ECU_U/ECU_C that is controlled by `main-ecu-u.sh/main-ecu-c.sh`. It contains the code for provisioning the ECU_U/ECU_C (`PROVISION`). For ECU_U it contains the code for verifying the TPM HMAC in SBB1 (`VERIFY_HMAC`), generating the challenge for the TPM in SBB2 (`GENERATE_CHALLENGE`), and authorizing the installation in SBB2 (`AUTHORIZE_INSTALLATION`). For ECU_C, it contains the code necessary in SBB2 to answer the challenge by the TPM (`ANSWER_CHALLENGE`)|
 | | fileHandler.c/.h | Auxiliary program to handle file access, e.g, write to file, append to file, read from file. |
 | | updateHandlerSw.o| Auxiliary program to handle key derivation according to TPM algorithms and cryptographic operations for HMAC generation. |
+| SWTPM | - | For our demo, we use a software TPM simulator. We use `https://github.com/stefanberger/libtpms` for the TPM software library and `https://github.com/stefanberger/swtpm` for the socket interface. |
 
 
 ## General Container Setup and Management
