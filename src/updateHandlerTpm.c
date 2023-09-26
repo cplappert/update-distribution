@@ -366,8 +366,8 @@ int executeIAP(ESYS_CONTEXT **ctx, TPM2B_NONCE nonceCaller, ESYS_TR **session,
     TPM2B_NONCE policyRef = {0};
     TPM2B_DIGEST cpHashA = {0};
 
-    LOGBLOB_ERROR(signatureStruct.signature.hmac.digest.sha256, TPM2_SHA256_DIGEST_SIZE, "inputMac");
-    LOGBLOB_ERROR(nonceTPM.buffer, nonceTPM.size, "nonceTPM");
+    LOGBLOB_DEBUG(signatureStruct.signature.hmac.digest.sha256, TPM2_SHA256_DIGEST_SIZE, "inputMac");
+    LOGBLOB_DEBUG(nonceTPM.buffer, nonceTPM.size, "nonceTPM");
 
     #ifdef PERFORMANCE
     clock_gettime(CLOCK_MONOTONIC_RAW, &start_policy_exec_3);
