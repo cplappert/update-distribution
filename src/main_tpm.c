@@ -432,26 +432,24 @@ int main(int argc, char *argv[])
     if(arguments.command == CREATE_POLICIES){
         LOG_INFO("%s", "Call this from the backend");
 
-        #ifdef PERFORMANCE
-        clock_gettime(CLOCK_MONOTONIC_RAW, &start_all);
+        // #ifdef PERFORMANCE
+        // clock_gettime(CLOCK_MONOTONIC_RAW, &start_all);
 
-        sleep(1);
+        // sleep(1);
 
-        clock_gettime(CLOCK_MONOTONIC_RAW, &end_all);
+        // clock_gettime(CLOCK_MONOTONIC_RAW, &end_all);
 
-        char *testString;
-        testString = malloc(MAXREADSIZE);
-        memset(testString, '\0', 1);
+        // char *testString;
+        // testString = malloc(MAXREADSIZE);
+        // memset(testString, '\0', 1);
 
-        snprintf(testString + strlen(testString), BUFFERSIZE, "%f,",
-            ((end_all.tv_sec - start_all.tv_sec) * SECOND_MULTIPLIER + 
-            (double) (end_all.tv_nsec - start_all.tv_nsec) / (double) NANOSECOND_DIVISOR));
+        // snprintf(testString + strlen(testString), BUFFERSIZE, "%f,",
+        //     ((end_all.tv_sec - start_all.tv_sec) * SECOND_MULTIPLIER +
+        //     (double) (end_all.tv_nsec - start_all.tv_nsec) / (double) NANOSECOND_DIVISOR));
 
-        printf("testString: %s\n", testString);
+        // printf("testString: %s\n", testString);
 
-        #endif
-
-
+        // #endif
 
         if (strlen(arguments.filePathDigest) == 0){
             LOG_ERROR("%s\n", "Expected session hash is missing. Please specify with 'session-hash' or 'h'");
