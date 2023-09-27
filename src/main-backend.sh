@@ -87,17 +87,19 @@ function backend_createderivationsecret {
 	fi
 
 	if [ -z ${3} ]; then 
-		SECRET=$(head -c 16 /dev/urandom)
-		echo "set to default derivation secret to $SECRET";
+		SECRET=$(head -c 16 /dev/urandom | xxd -p)
+		# echo "set to default derivation secret to $SECRET";
 
 	else
 		SECRET=$3
 	fi
-	echo "set derivation secret to '$SECRET'";
+	# echo "set derivation secret to $SECRET";
 
 
 	mkdir -p $DIRECTORY
-	echo -n $SECRET > $DIRECTORY/raw.key
+	echo -n $SECRET | xxd -p -r > $DIRECTORY/raw.key
+
+	echo "set derivation secret to `cat $DIRECTORY/raw.key | xxd -p`"
 
 	return $?
 
@@ -263,15 +265,15 @@ function backend_createtemplatehash {
 	# printf $TPMT_PUBLIC | xxd | openssl dgst -sha256 -binary -
 
 	# DIGEST_TEMPLATE=$(printf $TPMT_PUBLIC | xxd -r | openssl dgst -sha256 -binary -)
-	DIGEST_TEMPLATE=$(printf $TPMT_PUBLIC | xxd -r -p | openssl dgst -sha256 -binary -)
+	DIGEST_TEMPLATE=$(printf "%s" "$TPMT_PUBLIC" | xxd -r -p | openssl dgst -sha256 -hex - | sed 's/(stdin)= //g')
 	# DIGEST_TEMPLATE=$(printf $TPMT_PUBLIC | xxd | tr -d \\n | openssl dgst -sha256 -binary -)
 
 	echo DIGEST_TEMPLATE
-	printf $DIGEST_TEMPLATE | xxd
+	printf '%s\n' "$DIGEST_TEMPLATE"
 
 	printf $TPMT_PUBLIC | xxd -r -p | dd of=$DIRECTORY/template.file bs=1 seek=0 count=$(printf "%s" "$TPMT_PUBLIC" | wc -c) conv=notrunc
-	printf $DIGEST_TEMPLATE | dd of=$DIRECTORY/template.hash bs=1 seek=0 count=$(printf "%s" "$DIGEST_TEMPLATE" | wc -c) conv=notrunc
-	
+	printf "%s" "$DIGEST_TEMPLATE" | xxd -p -r | dd of=$DIRECTORY/template.hash bs=1 seek=0 count=$(printf "%s" "$DIGEST_TEMPLATE" | xxd -p -r | wc -c) conv=notrunc
+
 	return $?
 }
 
