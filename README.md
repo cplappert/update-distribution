@@ -85,9 +85,11 @@ symmetric key derivation), the derivation secret, and the condition ECU IDs.
 ```
 1. cd src
 2. Create backend keys, update packages, and some auxiliary data
-  - bash main-backend.sh allcmds rsa // "Export" raw.key `xxd keys/raw.key`
+  - bash main-backend.sh allcmds rsa
 3. cd ..
 ```
+
+> Hint: To execute the whole system with ECC, replace "rsa" with "ecc" in the `bash main-backend.sh allcmds rsa` command. Depending on whether "rsa" or "ecc" is used, a corresponding flag is set, so that all following commands will automatically use the correct cryptographic algorithms and schemes.
 
 ### Build and start Docker containers for TCU (with attached SWTPM), ECU_U, and ECU_C
 
